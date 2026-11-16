@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account — Mirza Bakery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/auth.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Canvas -->
+<canvas id="auth-canvas"></canvas>
+
+<!-- Background rings -->
+<div class="auth-rings">
+  <div class="auth-ring"></div>
+  <div class="auth-ring"></div>
+  <div class="auth-ring"></div>
+  <div class="auth-ring"></div>
+</div>
+
+<!-- Floating cake images BG -->
+<div class="auth-bg-cakes" id="authBgCakes"></div>
+
+<!-- Back to home -->
+<a href="../index.html" class="auth-back">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <path d="M19 12H5M5 12l7-7M5 12l7 7"/>
+  </svg>
+  Back to Home
+</a>
+
+<!-- Auth Page -->
+<div class="auth-page">
+  <div class="auth-card">
+    <!-- Logo -->
+    <div class="auth-logo">
+      <a href="../index.html">
+        <span class="logo-m">M</span><span class="logo-text">irza</span>
+      </a>
+    </div>
+    <p class="auth-tagline">✦ Luxury Artisan Bakery ✦</p>
+
+    <!-- Tabs -->
+    <div class="auth-tabs">
+      <a href="login.html" class="auth-tab">Sign In</a>
+      <a href="signup.html" class="auth-tab active">Create Account</a>
+    </div>
+
+    <!-- Error msg -->
+    <div class="auth-error" id="authError">Please check your details and try again.</div>
+
+    <!-- Success -->
+    <div class="auth-success-msg" id="authSuccess">
+      <div class="check">🎉</div>
+      <h3>Welcome to Mirza!</h3>
+      <p>Your account has been created. Redirecting...</p>
+    </div>
+
+    <!-- Form -->
+    <form class="auth-form" id="signupForm">
+
+      <div class="form-group">
+        <input type="text" id="signupName" placeholder=" " required autocomplete="name" />
+        <label for="signupName">Full Name</label>
+      </div>
+
+      <div class="form-group">
+        <input type="email" id="signupEmail" placeholder=" " required autocomplete="email" />
+        <label for="signupEmail">Email Address</label>
+      </div>
+
+      <div class="form-group">
+        <input type="tel" id="signupPhone" placeholder=" " />
+        <label for="signupPhone">Phone Number (Optional)</label>
+      </div>
+
+      <div class="form-group form-group-pass">
+        <input type="password" id="signupPass" placeholder=" " required autocomplete="new-password" minlength="6" />
+        <label for="signupPass">Password (min. 6 characters)</label>
+        <button type="button" class="toggle-pass" id="togglePass1" onclick="togglePassword('signupPass','togglePass1')">👁</button>
+      </div>
+
+      <div class="form-group form-group-pass">
+        <input type="password" id="signupPassConfirm" placeholder=" " required autocomplete="new-password" />
+        <label for="signupPassConfirm">Confirm Password</label>
+        <button type="button" class="toggle-pass" id="togglePass2" onclick="togglePassword('signupPassConfirm','togglePass2')">👁</button>
+      </div>
+
+      <!-- Password strength -->
+      <div class="pass-strength" id="passStrength" style="display:none;">
+        <div class="pass-strength-bar">
+          <div class="pass-strength-fill" id="passStrengthFill"></div>
+        </div>
+        <span class="pass-strength-label" id="passStrengthLabel">Weak</span>
+      </div>
+
+      <label class="form-check" style="margin-top:0.3rem;">
+        <input type="checkbox" id="agreeTerms" required />
+        <span>I agree to the <a href="#" style="color:var(--gold);text-decoration:none;">Terms</a> & <a href="#" style="color:var(--gold);text-decoration:none;">Privacy Policy</a></span>
+      </label>
+
+      <button type="submit" class="btn-auth" id="signupBtn">
+        Create Account ✦
+      </button>
+
+      <div class="auth-divider">or sign up with</div>
+
+      <div class="social-auth">
+        <button type="button" class="btn-social" onclick="socialSignup('Google')">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path fill="#EA4335" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          Google
+        </button>
+        <button type="button" class="btn-social" onclick="socialSignup('Facebook')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+          Facebook
+        </button>
+      </div>
+
+      <p class="auth-switch">
+        Already have an account? <a href="login.html">Sign in here</a>
+      </p>
+
+    </form>
+  </div>
+</div>
+
+<style>
+.pass-strength { margin-top: -0.5rem; }
+.pass-strength-bar {
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 0.3rem;
+}
+.pass-strength-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: all 0.3s;
+  width: 0;
+}
+.pass-strength-label { font-size: 0.65rem; letter-spacing: 0.1em; }
+</style>
+
+<script>
+// Cursor
+const cursorDot = document.getElementById('cursorDot');
+const cursorRing = document.getElementById('cursorRing');
+let mouseX=0, mouseY=0, dotX=0, dotY=0, ringX=0, ringY=0;
+document.addEventListener('mousemove', e => { mouseX=e.clientX; mouseY=e.clientY; });
+function animCursor() {
+  dotX += (mouseX-dotX)*0.9; dotY += (mouseY-dotY)*0.9;
+  ringX += (mouseX-ringX)*0.12; ringY += (mouseY-ringY)*0.12;
+  if(cursorDot) { cursorDot.style.left=dotX+'px'; cursorDot.style.top=dotY+'px'; }
+  if(cursorRing) { cursorRing.style.left=ringX+'px'; cursorRing.style.top=ringY+'px'; }
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+
+// Canvas
+const canvas = document.getElementById('auth-canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+window.addEventListener('resize', () => { canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
+
+const colors = ['#d97c8f','#e8a3b3','rgba(255,255,255,0.3)','#f5c6c6','#c8e6c9'];
+const pts = Array.from({length:60}, () => ({
+  x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+  vx:(Math.random()-.5)*.4, vy:-(Math.random()*.6+.2),
+  size:Math.random()*3+1, color:colors[Math.floor(Math.random()*colors.length)],
+  op:Math.random()*.3+.05, rot:Math.random()*360, rs:(Math.random()-.5)*1.5,
+  shape:Math.random()>.5?'c':'r'
+}));
+function animPts() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  pts.forEach(p => {
+    p.x+=p.vx; p.y+=p.vy; p.rot+=p.rs;
+    if(p.y<-10){p.y=canvas.height+10;p.x=Math.random()*canvas.width;}
+    ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
+    ctx.globalAlpha=p.op; ctx.fillStyle=p.color;
+    if(p.shape==='c'){ctx.beginPath();ctx.arc(0,0,p.size,0,Math.PI*2);ctx.fill();}
+    else{ctx.fillRect(-p.size,-p.size/2,p.size*2,p.size);}
+    ctx.restore();
+  });
+  requestAnimationFrame(animPts);
+}
+animPts();
+
+// BG cakes
+const bgCakes = document.getElementById('authBgCakes');
+const cakeImgs = ['../assets/images/cake2.jpg','../assets/images/cake4.png','../assets/images/cake5.jpg','../assets/images/cake1.jpg'];
+cakeImgs.forEach((src,i) => {
+  const div=document.createElement('div');
+  div.classList.add('auth-bg-cake');
+  const size=150+Math.random()*100;
+  div.style.cssText=`width:${size}px;height:${size}px;left:${5+i*25}%;animation-duration:${15+i*5}s;animation-delay:${i*4}s;`;
+  div.innerHTML=`<img src="${src}" alt="" style="border-radius:50%;width:100%;height:100%;object-fit:cover;"/>`;
+  bgCakes.appendChild(div);
+});
+
+// Toggle password
+function togglePassword(inputId,btnId) {
+  const inp=document.getElementById(inputId);
+  const btn=document.getElementById(btnId);
+  if(inp.type==='password'){inp.type='text';btn.textContent='🙈';}
+  else{inp.type='password';btn.textContent='👁';}
+}
+
+// Password strength
+const passInput = document.getElementById('signupPass');
+const strengthBar = document.getElementById('passStrength');
+const strengthFill = document.getElementById('passStrengthFill');
+const strengthLabel = document.getElementById('passStrengthLabel');
+
+passInput.addEventListener('input', () => {
+  const val = passInput.value;
+  strengthBar.style.display = val.length > 0 ? 'block' : 'none';
+
+  let score = 0;
+  if(val.length >= 6) score++;
+  if(val.length >= 10) score++;
+  if(/[A-Z]/.test(val)) score++;
+  if(/[0-9]/.test(val)) score++;
+  if(/[^A-Za-z0-9]/.test(val)) score++;
+
+  const levels = [
+    {w:'20%', c:'#e74c3c', l:'Weak'},
+    {w:'40%', c:'#e67e22', l:'Fair'},
+    {w:'60%', c:'#f39c12', l:'Good'},
+    {w:'80%', c:'#27ae60', l:'Strong'},
+    {w:'100%', c:'#d97c8f', l:'Excellent'}
+  ];
+  const lvl = levels[Math.min(score, levels.length-1)];
+  strengthFill.style.width = lvl.w;
+  strengthFill.style.background = lvl.c;
+  strengthLabel.textContent = lvl.l;
+  strengthLabel.style.color = lvl.c;
+});
+
+// Social signup
+function socialSignup(provider) {
+  document.getElementById('signupBtn').textContent = `Connecting to ${provider}...`;
+  setTimeout(() => {
+    localStorage.setItem('mirzaUser', JSON.stringify({name:provider+' User',email:provider.toLowerCase()+'@example.com',provider}));
+    successSignup();
+  }, 1500);
+}
+
+function successSignup() {
+  const form = document.getElementById('signupForm');
+  const success = document.getElementById('authSuccess');
+  const error = document.getElementById('authError');
+  if(form) form.style.display='none';
+  if(error) error.style.display='none';
+  if(success) success.style.display='block';
+  gsap.from(success, {scale:0.8, opacity:0, duration:0.5, ease:'back.out'});
+  setTimeout(() => { window.location.href='../index.html'; }, 1500);
+}
+
+// Signup form
+document.getElementById('signupForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const name = document.getElementById('signupName').value;
+  const email = document.getElementById('signupEmail').value;
+  const pass = document.getElementById('signupPass').value;
+  const passConfirm = document.getElementById('signupPassConfirm').value;
+  const error = document.getElementById('authError');
+  const btn = document.getElementById('signupBtn');
+
+  error.classList.remove('show');
+
+  if(pass !== passConfirm) {
+    error.textContent = 'Passwords do not match.';
+    error.classList.add('show');
+    gsap.from(error, {x:-10, duration:0.1, repeat:5, yoyo:true});
+    return;
+  }
+
+  btn.textContent = 'Creating account...';
+
+  setTimeout(() => {
+    // Save user to localStorage
+    const users = JSON.parse(localStorage.getItem('mirzaUsers') || '[]');
+    if(users.find(u => u.email === email)) {
+      btn.textContent = 'Create Account ✦';
+      error.textContent = 'Email already registered. Please sign in.';
+      error.classList.add('show');
+      return;
+    }
+    users.push({name, email, password: pass});
+    localStorage.setItem('mirzaUsers', JSON.stringify(users));
+    localStorage.setItem('mirzaUser', JSON.stringify({name, email}));
+    successSignup();
+  }, 1200);
+});
+
+// If already logged in
+if(localStorage.getItem('mirzaUser')) {
+  window.location.href = '../index.html';
+}
+</script>
+</body>
+</html>

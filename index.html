@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mirza Bakery — Luxury Artisan Cakes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollSmoother.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+</head>
+<body>
+
+<!-- =========  CANVAS PARTICLE BG  ========= -->
+<canvas id="particles-canvas"></canvas>
+
+<!-- =========  CUSTOM CURSOR  ========= -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- =========  PRELOADER  ========= -->
+<div id="preloader">
+  <div class="preloader-inner">
+    <div class="preloader-logo">
+      <span class="pre-m">M</span>
+      <span class="pre-name">irza</span>
+    </div>
+    <div class="preloader-line"></div>
+    <p class="preloader-tagline">Crafting Moments of Sweetness</p>
+  </div>
+</div>
+
+<!-- =========  NAVBAR  ========= -->
+<nav class="navbar" id="navbar">
+  <div class="nav-logo">
+    <a href="index.html">
+      <span class="logo-m">M</span><span class="logo-text">irza</span>
+    </a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#hero" class="nav-link">Home</a></li>
+    <li><a href="#about" class="nav-link">Story</a></li>
+    <li><a href="#products" class="nav-link">Collection</a></li>
+    <li><a href="#gallery" class="nav-link">Gallery</a></li>
+    <li><a href="#contact" class="nav-link">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <div class="cart-btn" id="cartBtn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 01-8 0"/>
+      </svg>
+      <span class="cart-count" id="cartCount">0</span>
+    </div>
+    <a href="pages/login.html" class="btn-nav-login">Sign In</a>
+  </div>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- =========  HERO  ========= -->
+<section class="hero" id="hero">
+  <!-- Full-screen changing cake background -->
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hero-bg-slide is-active" style="background-image:url('assets/images/cake5.jpg')"></div>
+    <div class="hero-bg-slide"></div>
+    <div class="hero-bg-overlay"></div>
+  </div>
+
+  <!-- Animated background rings -->
+  <div class="hero-rings">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+    <div class="ring ring-3"></div>
+    <div class="ring ring-4"></div>
+  </div>
+
+  <!-- Floating cake particles -->
+  <div class="floating-particles" id="floatingParticles"></div>
+
+  <!-- Accent dust lines -->
+  <div class="accent-lines">
+    <div class="gline gline-1"></div>
+    <div class="gline gline-2"></div>
+    <div class="gline gline-3"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span>✦</span> Est. 2020 <span>✦</span>
+    </div>
+    <h1 class="hero-title">
+      <span class="hero-title-line" data-text="Mirza">Mirza</span>
+      <span class="hero-title-sub">Artisan Bakery</span>
+    </h1>
+    <p class="hero-desc">Where every cake is a masterpiece. Handcrafted with passion,<br>baked with love, delivered to your door.</p>
+    <div class="hero-cta">
+      <a href="#products" class="btn-primary">Explore Collection</a>
+      <a href="#about" class="btn-ghost">Our Story</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num" data-target="500">0</span><span>+</span><p>Orders</p></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num" data-target="50">0</span><span>+</span><p>Recipes</p></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num" data-target="99">0</span><span>%</span><p>Satisfaction</p></div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- =========  MARQUEE STRIP  ========= -->
+<div class="marquee-strip">
+  <div class="marquee-track">
+    <span>Luxury Cakes ✦</span>
+    <span>Artisan Baking ✦</span>
+    <span>Handcrafted ✦</span>
+    <span>Premium Quality ✦</span>
+    <span>Custom Orders ✦</span>
+    <span>Mirza Bakery ✦</span>
+    <span>Luxury Cakes ✦</span>
+    <span>Artisan Baking ✦</span>
+    <span>Handcrafted ✦</span>
+    <span>Premium Quality ✦</span>
+    <span>Custom Orders ✦</span>
+    <span>Mirza Bakery ✦</span>
+  </div>
+</div>
+
+<!-- =========  ABOUT  ========= -->
+<section class="about" id="about">
+  <div class="about-container">
+    <div class="about-visual">
+      <div class="about-img-frame">
+        <div class="about-img-bg"></div>
+        <div class="about-img-card">
+          <img src="assets/images/cake6.jpg" alt="Our Story" />
+        </div>
+        <div class="about-img-accent">
+          <span>Since 2020</span>
+        </div>
+      </div>
+    </div>
+    <div class="about-text">
+      <div class="section-label">✦ Our Story</div>
+      <h2 class="section-title">Born from Passion,<br><em>Built on Flavor</em></h2>
+      <p>At Mirza Bakery, we believe every celebration deserves a masterpiece. Our artisan bakers combine traditional recipes with modern luxury to create cakes that are as beautiful as they are delicious.</p>
+      <p>From rich chocolate glazes to delicate cream cheese frostings — each cake is crafted by hand, baked fresh, and delivered with care.</p>
+      <div class="about-features">
+        <div class="feature-item">
+          <div class="feature-icon">🌿</div>
+          <div>
+            <h4>Premium Ingredients</h4>
+            <p>Locally sourced, always fresh</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">👨‍🍳</div>
+          <div>
+            <h4>Master Bakers</h4>
+            <p>5+ years of expertise</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🚚</div>
+          <div>
+            <h4>Swift Delivery</h4>
+            <p>Fresh to your doorstep</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========  PRODUCTS / COLLECTION  ========= -->
+<section class="products" id="products">
+  <div class="products-header">
+    <div class="section-label">✦ Our Collection</div>
+    <h2 class="section-title">Handcrafted <em>Masterpieces</em></h2>
+    <p class="section-sub">Every cake tells a story — which one will be yours?</p>
+  </div>
+
+  <div class="products-grid" id="productsGrid">
+
+    <div class="product-card" data-id="1" data-name="Easter Bundt Cake" data-price="4500">
+      <div class="product-card-inner">
+        <div class="product-img-wrap">
+          <img src="assets/images/cake1.jpg" alt="Easter Bundt Cake" class="product-img" />
+          <div class="product-img-overlay">
+            <button class="btn-quick-view">Quick View</button>
+          </div>
+          <div class="product-badge">Bestseller</div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Festive Collection</div>
+          <h3 class="product-name">Easter Bundt Cake</h3>
+          <div class="product-rating">★★★★★</div>
+          <p class="product-desc">Classic bundt with rainbow sprinkles & white glaze. Perfect for celebrations.</p>
+          <div class="product-footer">
+            <span class="product-price">Rs. 4,500</span>
+            <button class="btn-add-cart" onclick="addToCart({id:1,name:'Easter Bundt Cake',price:4500,img:'assets/images/cake1.jpg'})">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-id="2" data-name="Marble Chocolate Bundt" data-price="5200">
+      <div class="product-card-inner">
+        <div class="product-img-wrap">
+          <img src="assets/images/cake2.jpg" alt="Marble Chocolate Bundt" class="product-img" />
+          <div class="product-img-overlay">
+            <button class="btn-quick-view">Quick View</button>
+          </div>
+          <div class="product-badge new-badge">New</div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Signature Series</div>
+          <h3 class="product-name">Marble Chocolate Bundt</h3>
+          <div class="product-rating">★★★★★</div>
+          <p class="product-desc">Swirled marble texture with rich chocolate ganache drizzle. Pure indulgence.</p>
+          <div class="product-footer">
+            <span class="product-price">Rs. 5,200</span>
+            <button class="btn-add-cart" onclick="addToCart({id:2,name:'Marble Chocolate Bundt',price:5200,img:'assets/images/cake2.jpg'})">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-id="3" data-name="Red Velvet Supreme" data-price="5800">
+      <div class="product-card-inner">
+        <div class="product-img-wrap">
+          <img src="assets/images/cake3.jpg" alt="Red Velvet Supreme" class="product-img" />
+          <div class="product-img-overlay">
+            <button class="btn-quick-view">Quick View</button>
+          </div>
+          <div class="product-badge">Premium</div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Luxury Selection</div>
+          <h3 class="product-name">Red Velvet Supreme</h3>
+          <div class="product-rating">★★★★★</div>
+          <p class="product-desc">Velvety red cake with cream cheese filling. A true luxury experience.</p>
+          <div class="product-footer">
+            <span class="product-price">Rs. 5,800</span>
+            <button class="btn-add-cart" onclick="addToCart({id:3,name:'Red Velvet Supreme',price:5800,img:'assets/images/cake3.jpg'})">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-id="4" data-name="Classic Red Velvet Bundt" data-price="4800">
+      <div class="product-card-inner">
+        <div class="product-img-wrap">
+          <img src="assets/images/cake4.png" alt="Classic Red Velvet Bundt" class="product-img" />
+          <div class="product-img-overlay">
+            <button class="btn-quick-view">Quick View</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Classic Collection</div>
+          <h3 class="product-name">Classic Red Velvet Bundt</h3>
+          <div class="product-rating">★★★★☆</div>
+          <p class="product-desc">Traditional bundt with white cream glaze and crumble topping.</p>
+          <div class="product-footer">
+            <span class="product-price">Rs. 4,800</span>
+            <button class="btn-add-cart" onclick="addToCart({id:4,name:'Classic Red Velvet Bundt',price:4800,img:'assets/images/cake4.png'})">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-id="5" data-name="Dark Chocolate Coconut" data-price="6200">
+      <div class="product-card-inner">
+        <div class="product-img-wrap">
+          <img src="assets/images/cake5.jpg" alt="Dark Chocolate Coconut" class="product-img" />
+          <div class="product-img-overlay">
+            <button class="btn-quick-view">Quick View</button>
+          </div>
+          <div class="product-badge">Chef's Pick</div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Exclusive Reserve</div>
+          <h3 class="product-name">Dark Chocolate Coconut</h3>
+          <div class="product-rating">★★★★★</div>
+          <p class="product-desc">Dark bundt with ganache drizzle & toasted coconut. Our most indulgent creation.</p>
+          <div class="product-footer">
+            <span class="product-price">Rs. 6,200</span>
+            <button class="btn-add-cart" onclick="addToCart({id:5,name:'Dark Chocolate Coconut',price:6200,img:'assets/images/cake5.jpg'})">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" data-id="6" data-name="Chocolate Cream Filled" data-price="5500">
+      <div class="product-card-inner">
+        <div class="product-img-wrap">
+          <img src="assets/images/cake6.jpg" alt="Chocolate Cream Filled" class="product-img" />
+          <div class="product-img-overlay">
+            <button class="btn-quick-view">Quick View</button>
+          </div>
+          <div class="product-badge new-badge">Popular</div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Signature Series</div>
+          <h3 class="product-name">Chocolate Cream Filled</h3>
+          <div class="product-rating">★★★★★</div>
+          <p class="product-desc">Moist chocolate bundt with ricotta cream filling & caramel drizzle.</p>
+          <div class="product-footer">
+            <span class="product-price">Rs. 5,500</span>
+            <button class="btn-add-cart" onclick="addToCart({id:6,name:'Chocolate Cream Filled',price:5500,img:'assets/images/cake6.jpg'})">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =========  EXPERIENCE STRIP  ========= -->
+<section class="experience-strip">
+  <div class="exp-content">
+    <div class="section-label">✦ The Mirza Experience</div>
+    <h2 class="section-title">More Than a Cake,<br><em>A Memory</em></h2>
+    <a href="#products" class="btn-primary">Order Now</a>
+  </div>
+  <div class="exp-cakes-scroll">
+    <div class="exp-cakes-track" id="expTrack">
+      <div class="exp-cake-item"><img src="assets/images/cake1.jpg" alt="cake" /></div>
+      <div class="exp-cake-item"><img src="assets/images/cake2.jpg" alt="cake" /></div>
+      <div class="exp-cake-item"><img src="assets/images/cake3.jpg" alt="cake" /></div>
+      <div class="exp-cake-item"><img src="assets/images/cake4.png" alt="cake" /></div>
+      <div class="exp-cake-item"><img src="assets/images/cake5.jpg" alt="cake" /></div>
+      <div class="exp-cake-item"><img src="assets/images/cake6.jpg" alt="cake" /></div>
+      <!-- Duplicate for seamless loop -->
+      <div class="exp-cake-item"><img src="assets/images/cake1.jpg" alt="cake" /></div>
+      <div class="exp-cake-item"><img src="assets/images/cake2.jpg" alt="cake" /></div>
+      <div class="exp-cake-item"><img src="assets/images/cake3.jpg" alt="cake" /></div>
+    </div>
+  </div>
+</section>
+
+<!-- =========  GALLERY  ========= -->
+<section class="gallery" id="gallery">
+  <div class="gallery-header">
+    <div class="section-label">✦ Gallery</div>
+    <h2 class="section-title">Visual <em>Indulgence</em></h2>
+  </div>
+  <div class="gallery-masonry">
+    <div class="gallery-item g-tall">
+      <img src="assets/images/cake5.jpg" alt="gallery" />
+      <div class="gallery-overlay"><span>Dark Chocolate Coconut</span></div>
+    </div>
+    <div class="gallery-item">
+      <img src="assets/images/cake3.jpg" alt="gallery" />
+      <div class="gallery-overlay"><span>Red Velvet Supreme</span></div>
+    </div>
+    <div class="gallery-item">
+      <img src="assets/images/cake1.jpg" alt="gallery" />
+      <div class="gallery-overlay"><span>Easter Bundt</span></div>
+    </div>
+    <div class="gallery-item g-wide">
+      <img src="assets/images/cake2.jpg" alt="gallery" />
+      <div class="gallery-overlay"><span>Marble Chocolate</span></div>
+    </div>
+    <div class="gallery-item">
+      <img src="assets/images/cake6.jpg" alt="gallery" />
+      <div class="gallery-overlay"><span>Cream Filled</span></div>
+    </div>
+    <div class="gallery-item">
+      <img src="assets/images/cake4.png" alt="gallery" />
+      <div class="gallery-overlay"><span>Classic Red Velvet</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- =========  CONTACT  ========= -->
+<section class="contact" id="contact">
+  <div class="contact-wrapper">
+    <div class="contact-info">
+      <div class="section-label">✦ Get in Touch</div>
+      <h2 class="section-title">Order Your<br><em>Masterpiece</em></h2>
+      <div class="contact-details">
+        <div class="contact-item">
+          <span class="ci-icon">📍</span>
+          <div><strong>Location</strong><p>Lahore, Pakistan</p></div>
+        </div>
+        <div class="contact-item">
+          <span class="ci-icon">📞</span>
+          <div><strong>Phone</strong><p>+92 300 0000000</p></div>
+        </div>
+        <div class="contact-item">
+          <span class="ci-icon">✉️</span>
+          <div><strong>Email</strong><p>orders@mirzabakery.com</p></div>
+        </div>
+      </div>
+    </div>
+    <form class="contact-form" id="contactForm">
+      <div class="form-row">
+        <div class="form-group">
+          <input type="text" id="cname" required />
+          <label for="cname">Your Name</label>
+        </div>
+        <div class="form-group">
+          <input type="email" id="cemail" required />
+          <label for="cemail">Email Address</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <input type="text" id="csubject" required />
+        <label for="csubject">Cake Type / Subject</label>
+      </div>
+      <div class="form-group">
+        <textarea id="cmessage" rows="4" required></textarea>
+        <label for="cmessage">Your Message</label>
+      </div>
+      <button type="submit" class="btn-primary btn-full">Send Message ✦</button>
+    </form>
+  </div>
+</section>
+
+<!-- =========  FOOTER  ========= -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-logo"><span class="logo-m">M</span><span class="logo-text">irza</span></div>
+      <p>Handcrafted luxury cakes for life's most precious moments.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-link">Instagram</a>
+        <a href="#" class="social-link">Facebook</a>
+        <a href="#" class="social-link">Pinterest</a>
+      </div>
+    </div>
+    <div class="footer-links">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#about">Our Story</a></li>
+        <li><a href="#products">Collection</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Policies</h4>
+      <ul>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Delivery Info</a></li>
+        <li><a href="#">Refund Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 Mirza Bakery. All Rights Reserved.</p>
+    <p>Crafted with ✦ and 🍰</p>
+  </div>
+</footer>
+
+<!-- =========  CART SIDEBAR  ========= -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3>Your Cart <span id="cartItemCount">0</span></h3>
+    <button class="cart-close" id="cartClose">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty">
+      <div class="cart-empty-icon">🛍️</div>
+      <p>Your cart is empty</p>
+      <a href="#products" class="btn-primary">Browse Cakes</a>
+    </div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none;">
+    <div class="cart-total">
+      <span>Total</span>
+      <span class="cart-total-price" id="cartTotal">Rs. 0</span>
+    </div>
+    <button class="btn-primary btn-full" onclick="proceedCheckout()">Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- =========  QUICK VIEW MODAL  ========= -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="productModal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="modal-inner" id="modalInner"></div>
+  </div>
+</div>
+
+<!-- =========  TOAST  ========= -->
+<div class="toast" id="toast">
+  <span id="toastMsg">Added to cart!</span>
+</div>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
