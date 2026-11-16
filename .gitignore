@@ -5,13 +5,43 @@ node_modules/
 .env
 .env.local
 .env.*.local
+.env.development
+.env.production
+.env.test
+!.env.example
 
 # Logs
+logs/
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# OS / editor files
+# Build output / coverage
+dist/
+build/
+coverage/
+.nyc_output/
+.cache/
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# OS files
 .DS_Store
 Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Editor / IDE
 .vscode/
 .idea/
+.vs/
+*.suo
+*.swp
+*~
