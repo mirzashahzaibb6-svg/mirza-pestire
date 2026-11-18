@@ -1,3 +1,4 @@
+
 // =========================================
 // MIRZA BAKERY — Express Backend Server
 // =========================================
@@ -6,6 +7,13 @@ const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
+
+const dns = require('dns');
+dns.setServers([
+  '2001:4860:4860::8888',
+  '2001:4860:4860::8844'
+]);
 const path = require('path');
 require('dotenv').config();
 
@@ -52,17 +60,44 @@ app.use(cors({ origin: corsOrigin }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
-// ---- In-memory "database" (no SQL needed) ----
+// =========================================
+// MONGODB DATABASE CONNECTION
+// =========================================
+
+const userSchema = new mongoose.Schema({
+  id: { type: Number, required: true, unique: true },
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  phone: { type: String, default: '' },
+  role: { type: String, default: 'customer' },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const orderSchema = new mongoose.Schema({
+  id: { type: String, required: true, unique: true },
+  userId: { type: Number, required: true, index: true },
+  userName: String,
+  items: { type: mongoose.Schema.Types.Mixed, required: true },
+  total: mongoose.Schema.Types.Mixed,
+  currency: String,
+  address: String,
+  status: String,
+  createdAt: { type: Date, default: Date.now }
+});
+
+const User = mongoose.models.User || mongoose.model('User', userSchema);
+const Order = mongoose.models.Order || mongoose.model('Order', orderSchema);
+
+// ---- In-memory products (existing products preserved) ----
 const db = {
-  users: [],
-  orders: [],
   products: [
     { id: 1, name: 'Easter Bundt Cake', price: 4500, category: 'Festive Collection', img: 'assets/images/cake1.jpg', rating: 5, stock: 10 },
     { id: 2, name: 'Marble Chocolate Bundt', price: 5200, category: 'Signature Series', img: 'assets/images/cake2.jpg', rating: 5, stock: 8 },
     { id: 3, name: 'Red Velvet Supreme', price: 5800, category: 'Luxury Selection', img: 'assets/images/cake3.jpg', rating: 5, stock: 6 },
     { id: 4, name: 'Classic Red Velvet Bundt', price: 4800, category: 'Classic Collection', img: 'assets/images/cake4.png', rating: 4, stock: 12 },
     { id: 5, name: 'Dark Chocolate Coconut', price: 6200, category: 'Exclusive Reserve', img: 'assets/images/cake5.jpg', rating: 5, stock: 4 },
-    { id: 6, name: 'Chocolate Cream Filled', price: 5500, category: 'Signature Series', img: 'assets/images/cake6.jpg', rating: 5, stock: 7 },
+    { id: 6, name: 'Chocolate Cream Filled', price: 5500, category: 'Signature Series', img: 'assets/images/cake6.jpg', rating: 5, stock: 7 }
   ]
 };
 
@@ -95,6 +130,7 @@ function authPayload(user) {
 function authMiddleware(req, res, next) {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
   try {
     const payload = jwt.verify(token, JWT_SECRET);
     if (payload.type && payload.type !== 'access') {
@@ -168,26 +204,27 @@ app.post('/api/auth/register', async (req, res) => {
     if (!name || !email || !password) {
       return res.status(400).json({ error: 'Name, email and password are required' });
     }
+
     if (password.length < 6) {
       return res.status(400).json({ error: 'Password must be at least 6 characters' });
     }
 
-    const existing = db.users.find(u => u.email === email);
+    const existing = await User.findOne({ email });
     if (existing) {
       return res.status(409).json({ error: 'Email already registered' });
     }
 
     const hashedPassword = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
-    const user = {
+
+    const user = await User.create({
       id: Date.now(),
       name,
       email,
       password: hashedPassword,
       phone: phone || '',
       role: 'customer',
-      createdAt: new Date(),
-    };
-    db.users.push(user);
+      createdAt: new Date()
+    });
 
     res.status(201).json({
       success: true,
@@ -208,7 +245,7 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const user = db.users.find(u => u.email === email);
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
@@ -229,7 +266,7 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // ---- Auth: Refresh access token ----
-app.post('/api/auth/refresh', (req, res) => {
+app.post('/api/auth/refresh', async (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken) {
     return res.status(400).json({ error: 'Refresh token is required' });
@@ -241,7 +278,7 @@ app.post('/api/auth/refresh', (req, res) => {
       return res.status(401).json({ error: 'Invalid refresh token' });
     }
 
-    const user = db.users.find(u => u.id === payload.id);
+    const user = await User.findOne({ id: payload.id });
     if (!user) {
       return res.status(401).json({ error: 'User no longer exists' });
     }
@@ -253,52 +290,74 @@ app.post('/api/auth/refresh', (req, res) => {
 });
 
 // ---- Auth: Get current user ----
-app.get('/api/auth/me', authMiddleware, (req, res) => {
-  const user = db.users.find(u => u.id === req.user.id);
-  if (!user) return res.status(404).json({ error: 'User not found' });
-  res.json({
-    success: true,
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      role: user.role || 'customer'
-    }
-  });
+app.get('/api/auth/me', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findOne({ id: req.user.id });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    res.json({
+      success: true,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role || 'customer'
+      }
+    });
+  } catch (err) {
+    serverError(res, err, 'get current user');
+  }
 });
 
 // ---- Orders ----
-app.post('/api/orders', authMiddleware, (req, res) => {
-  const { items, total, address } = req.body;
+app.post('/api/orders', authMiddleware, async (req, res) => {
+  try {
+    const { items, total, address } = req.body;
 
-  if (!items || items.length === 0) {
-    return res.status(400).json({ error: 'No items in order' });
+    if (!items || items.length === 0) {
+      return res.status(400).json({ error: 'No items in order' });
+    }
+
+    const order = await Order.create({
+      id: `${ORDER_PREFIX}-${Date.now()}`,
+      userId: req.user.id,
+      userName: req.user.name,
+      items,
+      total,
+      currency: CURRENCY,
+      address: address || 'Not provided',
+      status: 'confirmed',
+      createdAt: new Date()
+    });
+
+    res.status(201).json({
+      success: true,
+      message: `Order ${order.id} confirmed!`,
+      order: {
+        id: order.id,
+        userId: order.userId,
+        userName: order.userName,
+        items: order.items,
+        total: order.total,
+        currency: order.currency,
+        address: order.address,
+        status: order.status,
+        createdAt: order.createdAt
+      }
+    });
+  } catch (err) {
+    serverError(res, err, 'create order');
   }
-
-  const order = {
-    id: `${ORDER_PREFIX}-${Date.now()}`,
-    userId: req.user.id,
-    userName: req.user.name,
-    items,
-    total,
-    currency: CURRENCY,
-    address: address || 'Not provided',
-    status: 'confirmed',
-    createdAt: new Date(),
-  };
-  db.orders.push(order);
-
-  res.status(201).json({
-    success: true,
-    message: `Order ${order.id} confirmed!`,
-    order
-  });
 });
 
-app.get('/api/orders', authMiddleware, (req, res) => {
-  const userOrders = db.orders.filter(o => o.userId === req.user.id);
-  res.json({ success: true, orders: userOrders });
+app.get('/api/orders', authMiddleware, async (req, res) => {
+  try {
+    const userOrders = await Order.find({ userId: req.user.id }).sort({ createdAt: -1 });
+    res.json({ success: true, orders: userOrders });
+  } catch (err) {
+    serverError(res, err, 'get orders');
+  }
 });
 
 // ---- Contact form ----
@@ -307,7 +366,9 @@ app.post('/api/contact', (req, res) => {
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Name, email and message are required' });
   }
+
   console.log(`\n✦ New Contact Message\nTo: ${SUPPORT_EMAIL}\nFrom: ${name} <${email}>\nSubject: ${subject}\n${message}\n`);
+
   res.json({
     success: true,
     message: 'Message received! We will get back to you soon.',
@@ -323,42 +384,59 @@ app.get('*', (req, res) => {
 // ---- Seed admin account from env ----
 async function seedAdmin() {
   if (!ADMIN_EMAIL || !ADMIN_PASSWORD) return;
-  if (db.users.find(u => u.email === ADMIN_EMAIL)) return;
+
+  const existing = await User.findOne({ email: ADMIN_EMAIL });
+  if (existing) return;
 
   const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, BCRYPT_SALT_ROUNDS);
-  db.users.push({
+
+  await User.create({
     id: Date.now(),
     name: ADMIN_NAME,
     email: ADMIN_EMAIL,
     password: hashedPassword,
     phone: '',
     role: 'admin',
-    createdAt: new Date(),
+    createdAt: new Date()
   });
+
   console.log(`✦ Admin account ready: ${ADMIN_EMAIL}`);
 }
 
 // ---- Start ----
 async function start() {
-  await seedAdmin();
+  try {
+    if (!process.env.MONGODB_URI) {
+      throw new Error('MONGODB_URI is missing from .env file');
+    }
 
-  app.listen(PORT, HOST, () => {
-    console.log(`\n✦ ${APP_NAME} Server (${NODE_ENV})\n`);
-    console.log(`🌐 Frontend: ${APP_URL}`);
-    console.log(`📡 API: ${APP_URL}/api`);
-    console.log(`\nRoutes:`);
-    console.log(`  GET  /api/health`);
-    console.log(`  GET  /api/config`);
-    console.log(`  GET  /api/products`);
-    console.log(`  POST /api/auth/register`);
-    console.log(`  POST /api/auth/login`);
-    console.log(`  POST /api/auth/refresh`);
-    console.log(`  GET  /api/auth/me`);
-    console.log(`  POST /api/orders`);
-    console.log(`  POST /api/contact\n`);
-  });
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('✦ MongoDB connected successfully');
+
+    await seedAdmin();
+
+    app.listen(PORT, HOST, () => {
+      console.log(`\n✦ ${APP_NAME} Server (${NODE_ENV})\n`);
+      console.log(`🌐 Frontend: ${APP_URL}`);
+      console.log(`📡 API: ${APP_URL}/api`);
+      console.log(`\nRoutes:`);
+      console.log(`  GET  /api/health`);
+      console.log(`  GET  /api/config`);
+      console.log(`  GET  /api/products`);
+      console.log(`  POST /api/auth/register`);
+      console.log(`  POST /api/auth/login`);
+      console.log(`  POST /api/auth/refresh`);
+      console.log(`  GET  /api/auth/me`);
+      console.log(`  POST /api/orders`);
+      console.log(`  POST /api/contact\n`);
+    });
+  } catch (err) {
+    console.error('✖ Server startup failed:', err.message);
+    process.exit(1);
+  }
 }
 
 start();
 
 module.exports = app;
+
